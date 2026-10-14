@@ -1,0 +1,227 @@
+/* =====================================================================
+   DESKOBS | style.css  (tokens + base + header)
+   Mobile first: phone styles are the default, bigger screens are added
+   inside @media (min-width: 768px) at the bottom of each block.
+
+   HTML this CSS expects (header only):
+
+   <a class="skip-link" href="#main">Skip to content</a>
+   <header class="site-header" id="navbar">
+     <nav class="nav" aria-label="Main">
+       <a class="logo" href="index.html">DESKOBS</a>
+       <div class="nav-right">
+         <ul class="nav-links">
+           <li><a href="shop.html" aria-current="page">Shop</a></li>
+           <li><a href="#">Desk</a></li> ...
+         </ul>
+         <div class="nav-actions">
+           <button class="icon-btn" id="search-toggle" aria-label="Search">SVG</button>
+           <a class="icon-btn" id="profile-link" href="account.html" aria-label="My account">SVG</a>
+           <button class="icon-btn" id="cart-toggle" aria-label="Open bag">SVG
+             <span class="cart-count" id="cart-count"></span></button>
+           <button class="icon-btn menu-btn" id="mobile-menu-btn" aria-label="Menu" aria-expanded="false">
+             <span class="burger"><span></span><span></span></span></button>
+         </div>
+       </div>
+     </nav>
+     <div class="mobile-menu" id="mobile-menu">
+       <a href="shop.html">Shop</a> <a href="#">Desk</a> ...
+     </div>
+   </header>
+   ===================================================================== */
+
+
+/* ---------- 1. DESIGN TOKENS: change a look here, not everywhere ---------- */
+:root {
+  /* colors */
+  --bg: #f4f4f2;          /* page background, soft grey not pure white */
+  --surface: #ffffff;     /* header, cards */
+  --ink: #1c1c1c;         /* main text */
+  --muted: #6b6b6b;       /* secondary text */
+  --line: #dcdcd8;        /* borders */
+  --accent: #ff5a1f;      /* the one loud color: badge, active link, focus */
+  --accent-ink: #ffffff;  /* text on top of the accent */
+
+  /* type */
+  --font-head: "Archivo", "Arial Black", sans-serif;
+  --font-body: "Public Sans", system-ui, -apple-system, sans-serif;
+
+  /* spacing scale: only use these */
+  --s1: 4px; --s2: 8px; --s3: 16px; --s4: 24px; --s5: 32px; --s6: 48px;
+
+  /* shape + layout */
+  --radius: 6px;
+  --header-h: 64px;
+  --container: 1200px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* Dark theme: your site.js sets data-theme="dark" on <html> */
+[data-theme="dark"] {
+  --bg: #121212;
+  --surface: #1b1b1b;
+  --ink: #f2f2f0;
+  --muted: #9a9a96;
+  --line: #2e2e2c;
+}
+
+@media (min-width: 768px) {
+  :root { --header-h: 72px; }
+}
+
+
+/* ---------- 2. BASE / RESET ---------- */
+*, *::before, *::after { box-sizing: border-box; } /* padding no longer grows widths */
+html { scroll-padding-top: var(--header-h); }      /* anchor links don't hide under the header */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+ul { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+svg { display: block; }
+
+/* Keyboard users see where they are. Mouse users don't get the ring. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+/* Lets keyboard users jump past the menu */
+.skip-link {
+  position: absolute; left: var(--s3); top: -100px; z-index: 200;
+  background: var(--ink); color: var(--bg);
+  padding: var(--s2) var(--s3); border-radius: var(--radius);
+}
+.skip-link:focus { top: var(--s2); }
+
+
+/* ---------- 3. HEADER SHELL ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 100;       /* stays visible while scrolling */
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);                  /* frosted glass over content */
+  border-bottom: 1px solid var(--line);
+  transition: box-shadow .25s var(--ease);
+}
+/* site.js adds .is-scrolled after scrolling 8px */
+.site-header.is-scrolled { box-shadow: 0 6px 20px rgba(0, 0, 0, .08); }
+
+.nav {
+  display: flex;
+  align-items: center;             /* vertical centering */
+  justify-content: space-between;  /* logo far left, .nav-right far right */
+  height: var(--header-h);
+  max-width: var(--container);
+  margin: 0 auto;                  /* center the capped content */
+  padding: 0 var(--s3);
+}
+@media (min-width: 768px) { .nav { padding: 0 var(--s4); } }
+
+
+/* ---------- 4. LOGO ---------- */
+.logo {
+  font: 800 20px/1 var(--font-head);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) { .logo { font-size: 24px; } }
+
+
+/* ---------- 5. NAV LINKS (hidden on phone, shown from 768px) ---------- */
+.nav-right { display: flex; align-items: center; gap: var(--s5); }
+.nav-links { display: none; }
+
+.nav-links a {
+  position: relative;
+  display: inline-block;
+  padding: var(--s2) 0;
+  font-size: 15px; font-weight: 500;
+  color: var(--muted);
+  transition: color .2s;
+}
+/* Underline that grows from the left on hover, stays on the current page */
+.nav-links a::after {
+  content: "";
+  position: absolute; left: 0; bottom: 2px;
+  width: 100%; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s var(--ease);
+}
+.nav-links a:hover,
+.nav-links a[aria-current="page"] { color: var(--ink); }
+.nav-links a:hover::after,
+.nav-links a[aria-current="page"]::after { transform: scaleX(1); }
+
+@media (min-width: 768px) {
+  .nav-links { display: flex; gap: var(--s5); }
+}
+
+
+/* ---------- 6. ICON BUTTONS: search, profile, cart, menu ---------- */
+.nav-actions { display: flex; align-items: center; gap: var(--s1); }
+
+.icon-btn {
+  position: relative;               /* the badge positions itself against this */
+  display: grid; place-items: center;
+  width: 44px; height: 44px;        /* minimum comfortable thumb target */
+  border-radius: 50%;
+  transition: background .2s;
+}
+.icon-btn:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+/* Cart count bubble. Empty text = hidden, so no "0" bubble. */
+.cart-count {
+  position: absolute; top: 2px; right: 0;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  display: grid; place-items: center;
+  background: var(--accent); color: var(--accent-ink);
+  border-radius: 9px;
+  font: 700 11px/1 var(--font-body);
+}
+.cart-count:empty { display: none; }
+
+
+/* ---------- 7. HAMBURGER (phone only) ---------- */
+.burger { position: relative; width: 20px; height: 14px; }
+.burger span {
+  position: absolute; left: 0; width: 100%; height: 2px;
+  background: currentColor; border-radius: 1px;
+  transition: transform .3s var(--ease), top .3s var(--ease);
+}
+.burger span:nth-child(1) { top: 2px; }
+.burger span:nth-child(2) { top: 10px; }
+/* site.js adds .is-open to the button: lines turn into an X */
+.menu-btn.is-open .burger span:nth-child(1) { top: 6px; transform: rotate(45deg); }
+.menu-btn.is-open .burger span:nth-child(2) { top: 6px; transform: rotate(-45deg); }
+
+@media (min-width: 768px) { .menu-btn { display: none; } }
+
+
+/* ---------- 8. MOBILE MENU PANEL ---------- */
+.mobile-menu {
+  display: grid;
+  max-height: 0; overflow: hidden;           /* closed state */
+  background: var(--surface);
+  border-top: 1px solid transparent;
+  transition: max-height .35s var(--ease), border-color .35s;
+}
+.mobile-menu.is-open { max-height: 80vh; border-top-color: var(--line); }
+.mobile-menu a {
+  padding: var(--s3) var(--s4);              /* big tap targets */
+  font: 700 18px/1.2 var(--font-head);
+  border-bottom: 1px solid var(--line);
+}
+.mobile-menu a:active { background: var(--bg); }
+
+@media (min-width: 768px) { .mobile-menu { display: none; } }
+
+
+/* ---------- 9. ACCESSIBILITY: respect "reduce motion" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

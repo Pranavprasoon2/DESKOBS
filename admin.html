@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Admin | DESKOBS</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="pages.css"><style>table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}td input{width:90px;padding:6px}.wrap{overflow-x:auto}</style></head>
+<body><main class="container" style="padding:var(--s5) var(--s3)"><h1 class="page-title">Admin</h1>
+<form id="k" class="toolbar"><input id="key" type="password" placeholder="Admin key" aria-label="Admin key" autocomplete="off"><button class="btn" type="submit">Load</button></form><p id="msg" role="status"></p>
+<h2>Orders</h2><div class="wrap"><table id="orders"></table></div>
+<h2 style="margin-top:32px">Products</h2><div class="wrap"><table id="prods"></table></div>
+<h2 style="margin-top:32px">Discount code</h2><form id="cp" class="toolbar"><input name="code" placeholder="CODE" aria-label="Code"><input name="percent" type="number" min="1" max="90" placeholder="% off" aria-label="Percent off"><button class="btn ghost" type="submit">Save code</button></form></main>
+<script>
+const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let key=''; const say=m=>$('#msg').textContent=m;
+const call=async(url,method,body)=>{const r=await fetch(url,{method:method||'GET',headers:{'Content-Type':'application/json','x-admin-key':key},body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Failed');return j;};
+async function load(){try{
+ const o=await call('/api/admin/orders'),p=await call('/api/admin/products');say('');
+ $('#orders').innerHTML='<tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr>'+o.map(x=>'<tr><td>'+x.id+'</td><td>'+esc(x.name)+'<br>'+esc(x.phone)+'<br>'+esc(x.address)+'</td><td>'+x.items.map(i=>esc(i.name)+' x'+i.qty).join('<br>')+'</td><td>₹'+x.total+'<br>'+esc(x.pay)+'</td><td><select data-o="'+x.id+'">'+['placed','confirmed','shipped','delivered','cancelled'].map(s=>'<option'+(s===x.status?' selected':'')+'>'+s+'</option>').join('')+'</select></td></tr>').join('');
+ $('#prods').innerHTML='<tr><th>Product</th><th>Price ₹</th><th>Stock</th><th></th></tr>'+p.map(x=>'<tr><td>'+esc(x.name)+'</td><td><input type="number" value="'+x.price+'" data-p="'+x.id+'" data-f="price"></td><td><input type="number" value="'+x.stock+'" data-p="'+x.id+'" data-f="stock"></td><td><button class="btn small ghost" data-save="'+x.id+'">Save</button></td></tr>').join('');
+}catch(e){say(e.message)}}
+$('#k').onsubmit=e=>{e.preventDefault();key=$('#key').value;load()};
+$('#orders').onchange=async e=>{const s=e.target.closest('[data-o]');if(!s)return;try{await call('/api/admin/orders/'+s.dataset.o,'PATCH',{status:s.value});say('Order '+s.dataset.o+' is now '+s.value+'.');load()}catch(er){say(er.message)}};
+$('#prods').onclick=async e=>{const b=e.target.closest('[data-save]');if(!b)return;const id=b.dataset.save,v=f=>document.querySelector('[data-p="'+id+'"][data-f="'+f+'"]').value;try{await call('/api/admin/products/'+id,'PATCH',{price:v('price'),stock:v('stock')});say('Saved.')}catch(er){say(er.message)}};
+$('#cp').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));try{await call('/api/admin/coupons','POST',d);say('Code saved.')}catch(er){say(er.message)}};
+</script></body></html>

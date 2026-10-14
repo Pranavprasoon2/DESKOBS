@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Desk objects you use every day | DESKOBS</title><meta name="description" content="Desk mats, stands, lamps, chargers and carry bags."><meta name="theme-color" content="#1c1c1c"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231c1c1c'/%3E%3Cpath d='M10 8h6a8 8 0 0 1 0 16h-6z' fill='none' stroke='%23ff5a1f' stroke-width='3'/%3E%3C/svg%3E"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="pages.css"><script src="products.js" defer></script><script src="site.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script><script src="animations.js" defer></script></head>
+<body data-page="home"><a class="skip-link" href="#main">Skip to content</a><div id="hdr"></div>
+<main id="main">
+<section class="hero"><div class="container hero-inner"><div>
+<h1>Objects for the desk you live at</h1><p>Mats, stands, lights, chargers and bags. Everyday things, designed to look good and last.</p>
+<a class="btn accent" href="shop.html">Shop all objects</a> <a class="btn ghost" href="about.html">Our story</a></div>
+<div class="hero-art"><div role="img" aria-label="Headphone stand and leather desk mat on an oak desk" data-img="hero1"></div><div role="img" aria-label="Teal adjustable desk lamp" data-img="hero2"></div><div role="img" aria-label="Wooden desk tray holding everyday items" data-img="hero3"></div><div role="img" aria-label="Leather travel bag with a laptop" data-img="hero4"></div></div></div></section>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Desk</span><span>·</span><span>Light</span><span>·</span><span>Tech</span><span>·</span><span>Carry</span><span>·</span><span>Desk</span><span>·</span><span>Light</span><span>·</span><span>Tech</span><span>·</span><span>Carry</span><span>·</span><span>Desk</span><span>·</span><span>Light</span><span>·</span><span>Tech</span><span>·</span><span>Carry</span><span>·</span><span>Desk</span><span>·</span><span>Light</span><span>·</span><span>Tech</span><span>·</span><span>Carry</span><span>·</span></div></div>
+<section class="section container"><h2>Shop by category</h2><div class="cats">
+<a class="cat-tile" href="shop.html?cat=desk">Desk</a><a class="cat-tile" href="shop.html?cat=light">Light</a><a class="cat-tile" href="shop.html?cat=tech">Tech</a><a class="cat-tile" href="shop.html?cat=carry">Carry</a></div></section>
+<section class="section container"><div class="feature"><div class="frame img" data-speed="0.15"><div class="img-in" role="img" aria-label="Wooden headphone stand" data-img="feature"></div></div>
+<div class="boxes"><h2>Made for daily use</h2>
+<div class="box" data-speed="0.3"><b>01</b><p>Designed objects chosen for build quality and simple looks.</p></div>
+<div class="box" data-speed="0.6"><b>02</b><p>Free delivery on orders above ₹2,000.</p></div>
+<div class="box" data-speed="0.9"><b>03</b><p>Order on WhatsApp or pay with UPI. No account needed.</p></div></div></div></section>
+<section class="section container" aria-labelledby="featured-title"><h2 id="featured-title">Featured</h2><p id="featured-status" role="status" aria-live="polite">Loading featured objects…</p><div class="grid" id="featured" aria-labelledby="featured-title" aria-busy="true"></div></section>
+</main><div id="ftr"></div><div id="toast" class="toast" role="status"></div><script>
+document.addEventListener('DOMContentLoaded', function () {
+  const grid = document.getElementById('featured');
+  const status = document.getElementById('featured-status');
+  const products = typeof PRODUCTS === 'undefined' ? undefined : PRODUCTS;
+  if (!grid || !status) return;
+  if (grid.children.length) {
+    status.textContent = grid.children.length + ' featured objects.';
+  } else if (Array.isArray(products) && products.length === 0) {
+    status.textContent = 'No featured objects are available right now. Browse the shop to see what’s available.';
+  } else {
+    status.textContent = 'Featured objects could not be loaded. Please try the shop instead.';
+  }
+  grid.setAttribute('aria-busy', 'false');
+});
+</script></body></html>
+
+<!-- To make this storefront production-ready:
+Frontend: product detail pages, category/search/filter controls, persistent cart,
+checkout and order-status screens, loading/error/empty states, and accessible mobile layouts.
+Backend: product/inventory and pricing API, database, cart and order endpoints,
+payment-provider integration (never store card details), WhatsApp order handling,
+admin product/order management, and secure validation/authentication where needed.
+Also add HTTPS, input validation, privacy/terms, shipping/returns, and contact information. -->
